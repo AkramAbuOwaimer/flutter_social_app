@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+final GoogleSignIn googleSignIn = GoogleSignIn();
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -11,12 +14,41 @@ class _HomeState extends State<Home> {
   bool isAuth = false;
   bool isSignInButtonPressed = false;
   @override
+  void initState() {
+    super.initState();
+    googleSignIn.onCurrentUserChanged.listen((account) {
+      handleSignIn(account);
+    }, onError: (err) => handleSignInError(err));
+    googleSignIn
+        .signInSilently(suppressErrors: false)
+        .then((account) => handleSignIn(account))
+        .catchError((err) => handleSignInError(err));
+  }
+
+  void handleSignInError(err) {
+    print('Error : $err');
+  }
+
+  void handleSignIn(GoogleSignInAccount? account) {
+    if (account != null) {
+      print('user signed in : $account');
+      setState(() {
+        isAuth = true;
+      });
+    } else {
+      setState(() {
+        isAuth = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return isAuth ? buildAuthRoute() : buildUnAuthRoute();
   }
 
   Widget buildAuthRoute() {
-    return const Text('Authentecated');
+    return ElevatedButton(child: const Text('Logout'), onPressed: logout);
   }
 
   Widget buildUnAuthRoute() {
@@ -59,7 +91,7 @@ class _HomeState extends State<Home> {
                   });
                 },
                 onTap: () {
-                  print("sign in tapped ^_^");
+                  login();
                 },
                 child: Container(
                   width: 315.0,
@@ -87,5 +119,13 @@ class _HomeState extends State<Home> {
 
   AssetImage signInButtonUnPressed() {
     return const AssetImage('assets/images/sign_in_with_google.png');
+  }
+
+  login() {
+    googleSignIn.signIn();
+  }
+
+  logout() {
+    googleSignIn.signOut();
   }
 }

@@ -15,9 +15,20 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Social App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
-            .copyWith(secondary: Colors.cyan[500]),
-      ),
+          colorScheme: ColorScheme(
+              primary: Color(0xFF66bb6a),
+              onPrimary: Color(0xFF000000),
+              primaryVariant: Color(0xFF338a3e),
+              background: Color(0xFF98ee99),
+              onBackground: Color(0xFF000000),
+              secondary: Color(0xFF29b6f6),
+              onSecondary: Color(0xFF000000),
+              secondaryVariant: Color(0xFF0086c3),
+              surface: Color(0xFF73e8ff),
+              onSurface: Color(0xFF000000),
+              error: Color(0xFFc62828),
+              onError: Color(0xFFFFFFFF),
+              brightness: Brightness.light)),
       home: Home(),
     );
   }

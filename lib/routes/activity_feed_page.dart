@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ActivityFeed extends StatefulWidget {
+class ActivityFeedPage extends StatefulWidget {
+  const ActivityFeedPage({Key? key}) : super(key: key);
+
   @override
-  _ActivityFeedState createState() => _ActivityFeedState();
+  _ActivityFeedPageState createState() => _ActivityFeedPageState();
 }
 
-class _ActivityFeedState extends State<ActivityFeed> {
+class _ActivityFeedPageState extends State<ActivityFeedPage> {
   @override
   Widget build(BuildContext context) {
     return Text('Activity Feed');

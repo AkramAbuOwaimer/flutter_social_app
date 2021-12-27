@@ -37,6 +37,7 @@ dependencies:
   firebase_storage: 
   cupertino_icons: 
   google_sign_in: 
+  convex_bottom_bar: ^3.0.0
   # geoflutterfire: ^3.0.1
   # location: ^4.3.0
   # google_maps_flutter: ^2.1.1

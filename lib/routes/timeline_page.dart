@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_social_app/widgets/header.dart';
+import 'package:flutter_social_app/widgets/progress.dart';
 
 class TimelinePage extends StatefulWidget {
   const TimelinePage({Key? key}) : super(key: key);
@@ -10,6 +12,9 @@ class TimelinePage extends StatefulWidget {
 class _TimelinePageState extends State<TimelinePage> {
   @override
   Widget build(context) {
-    return Text("Timeline");
+    return Scaffold(
+      appBar: appBarHeader(context, isTitle: true),
+      body: circularProgress(context),
+    );
   }
 }

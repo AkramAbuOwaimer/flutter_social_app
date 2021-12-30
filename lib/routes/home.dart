@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social_app/routes/activity_feed_page.dart';
+import 'package:flutter_social_app/routes/create_account.dart';
 import 'package:flutter_social_app/routes/profile_page.dart';
 import 'package:flutter_social_app/routes/search_page.dart';
 import 'package:flutter_social_app/routes/timeline_page.dart';
@@ -8,6 +10,8 @@ import 'package:flutter_social_app/routes/upload_page.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final userRef = FirebaseFirestore.instance.collection('users');
+final timestamp = DateTime.now();
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -21,7 +25,7 @@ class _HomeState extends State<Home> {
   bool isSignInButtonPressed = false;
   late PageController pageController = PageController(initialPage: 2);
   int pageIndex = 2;
-
+  bool isSilent = false;
   @override
   void initState() {
     super.initState();
@@ -30,7 +34,7 @@ class _HomeState extends State<Home> {
     }, onError: (err) => handleSignInError(err));
     googleSignIn
         .signInSilently(suppressErrors: false)
-        .then((account) => handleSignIn(account))
+        .then((account) => handleSignInSilent(account))
         .catchError((err) => handleSignInError(err));
   }
 
@@ -38,9 +42,13 @@ class _HomeState extends State<Home> {
     print('Error : $err');
   }
 
-  void handleSignIn(GoogleSignInAccount? account) {
+  void handleSignIn(GoogleSignInAccount? account) async {
     if (account != null) {
-      print('user signed in : $account');
+      var result = await createUserInDatabase();
+      if (result == null) {
+        googleSignIn.signOut();
+        return;
+      }
       setState(() {
         isAuth = true;
       });
@@ -202,5 +210,40 @@ class _HomeState extends State<Home> {
 
   logout() {
     googleSignIn.signOut();
+  }
+
+  Future createUserInDatabase() async {
+    final user = googleSignIn.currentUser;
+    final doc = await userRef.doc(user!.id).get();
+
+    if (!doc.exists && !isSilent) {
+      final userName = await Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (context) => CreateAccount(), fullscreenDialog: true),
+      );
+      if (userName == "" || userName == null) {
+        return null;
+      }
+      final signedUser = await userRef.doc(user.id).set({
+        "id": user.id,
+        "username": userName,
+        "photoUrl": user.photoUrl,
+        "email": user.email,
+        "displayName": user.displayName,
+        "bio": "",
+        "timestamp": timestamp,
+      });
+      return userName;
+    } else if (!doc.exists && isSilent) {
+      googleSignIn.signOut();
+      isSilent = false;
+    } else if (doc.exists) {
+      return "exists";
+    }
+  }
+
+  handleSignInSilent(GoogleSignInAccount? account) {
+    isSilent = true;
+    handleSignIn(account);
   }
 }

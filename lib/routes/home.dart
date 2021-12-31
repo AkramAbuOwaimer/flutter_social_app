@@ -205,7 +205,11 @@ class _HomeState extends State<Home> {
   }
 
   login() {
-    googleSignIn.signIn();
+    if (googleSignIn.currentUser == null)
+      googleSignIn.signIn();
+    else {
+      googleSignIn.signOut();
+    }
   }
 
   logout() {

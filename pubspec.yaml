@@ -48,7 +48,7 @@ dependencies:
   # path_provider: ^2.0.8
   # timeago: ^3.1.0
   # cached_network_image: ^3.2.0
-  # flutter_svg: ^1.0.0
+  flutter_svg: ^1.0.0
   # geolocator:
 
 dev_dependencies:
@@ -77,6 +77,8 @@ flutter:
   assets:
     - assets/images/sign_in_with_google.png
     - assets/images/sign_in_with_google_pressed.jpg
+    - assets/images/no_content_file.svg
+    - assets/images/no_content_screen.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
